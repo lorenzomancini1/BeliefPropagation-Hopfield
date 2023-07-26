@@ -58,15 +58,16 @@ end
 
 function update_messages!(h, J, β)
     #h_copy = deepcopy(h)
+    N = size(J, 1)
     for i in 1:N
         update_node_msg!(h, J, i, β)
-
     end
     h[diagind(h)] .= 0
     #return h_copy
 end
 
 function H(i, J, h, β)
+    N = size(J, 1)
     Hi = sum( f(J[i, k], h[k, i], β) for k in 1:N )
     return Hi
 end
@@ -96,13 +97,15 @@ function run_bp(σ, J, β, p; maxiter = 200)
     m = 1 - 2*p
     h = init_messages(σ, m)
     h_copy = deepcopy(h)
-    diff = 1
-    mags = zeros(N)
+    diff = 1 # keep track of the changes related to the messages matrix
+    mags = zeros(N) # vector that will be filled with magnetizations
     iter = 0
 
     while diff > 0 && iter < maxiter
         update_messages!(h, J, β)
         diff = norm(h_copy - h) / N^2 
+        #println(diff)
+        #println(h == h_copy)
         h_copy .= h
         iter += 1
     end
