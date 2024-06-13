@@ -1,4 +1,11 @@
 .DS_Store
+
+# python files
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 **/__pycache__
+find_critical_noise.py
+
+# simulation data
+data/
+

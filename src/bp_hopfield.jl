@@ -1,3 +1,5 @@
+module BP
+
 using Random, Statistics, LinearAlgebra
 
 function hopfield_sample(N, α)
@@ -13,7 +15,7 @@ end
 
 function perturb(σ::AbstractVector, p)
     
-    #Function that perturb a configuration σ by flipping all its element with probability p
+    #Function that perturbs a configuration σ by flipping all its element with probability p
     
     N = length(σ)
     σ_new = copy(σ)
@@ -50,7 +52,8 @@ end
 
 function update_node_msg!(h, J, i, β)
     N = size(J, 1)
-    hi = sum( f(J[k, i], h[k, i], β) for k in 1:N)
+    h_t = h'
+    hi = sum( f(J[i, k], h_t[i, k], β) for k in 1:N) # here maybe the implementation is suboptimal
     for j in 1:N
         h[i, j] = hi - f(J[j, i], h[j, i], β)
     end
@@ -59,7 +62,7 @@ end
 function update_messages!(h, J, β)
     #h_copy = deepcopy(h)
     N = size(J, 1)
-    for i in 1:N
+    Threads.@threads for i in 1:N
         update_node_msg!(h, J, i, β)
     end
     h[diagind(h)] .= 0
@@ -73,7 +76,7 @@ function H(i, J, h, β)
 end
 
 function marginal(σ, H, β)
-    return exp(σ*H*β)
+    return exp(σ * H * β)
 end
 
 #function node_belief(i, ν)
@@ -101,7 +104,7 @@ function run_bp(σ, J, β, p; maxiter = 200)
     mags = zeros(N) # vector that will be filled with magnetizations
     iter = 0
 
-    while diff > 0 && iter < maxiter
+    while diff > 0 && iter <= maxiter
         update_messages!(h, J, β)
         diff = norm(h_copy - h) / N^2 
         #println(diff)
@@ -112,15 +115,14 @@ function run_bp(σ, J, β, p; maxiter = 200)
     
     
     #compute marginals
+    # compute directly mags (tanh(\beta * Hi)) --->
     for i in eachindex(σ)
         #mag[i] = marginal(σ[i], H(i, J, h, β), β)
         mags[i] = tanh(β * H(i, J, h, β))
     end
-    # calcolo direttamente la mag (tanh(\beta * Hi)) --->
-
     #bel ./ sum(bel)
-
     return mags
 end
 
-# fare stessi esperimenti della tesi (P_rec e taglia dei bacini confrontare risultati con le robe della tesi)
+end
+
