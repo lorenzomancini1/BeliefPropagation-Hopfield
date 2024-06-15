@@ -10,7 +10,7 @@ J_{ij} = (1 - \delta_{ij})\frac{1}{N} \sum_{\mu = 1}^{M} \xi_i^\mu \xi_j^\mu.
 $$
 After storing patterns, a perturbed configuration can be restored to its original state through energy minimization
 $$
-E(\symbf{\sigma}) = - \frac{1}{2} \sum_{i, j} J_{ij} \sigma_i \sigma_j.
+E(\mathbf{\sigma}) = - \frac{1}{2} \sum_{i, j} J_{ij} \sigma_i \sigma_j.
 $$
 
 > TODO: Add details about Belief Propagation
