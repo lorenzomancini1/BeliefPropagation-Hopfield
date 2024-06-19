@@ -107,8 +107,6 @@ function run_bp(σ, J, β, p; maxiter = 200)
     while diff > 0 && iter <= maxiter
         update_messages!(h, J, β)
         diff = norm(h_copy - h) / N^2 
-        #println(diff)
-        #println(h == h_copy)
         h_copy .= h
         iter += 1
     end
@@ -117,10 +115,8 @@ function run_bp(σ, J, β, p; maxiter = 200)
     #compute marginals
     # compute directly mags (tanh(\beta * Hi)) --->
     for i in eachindex(σ)
-        #mag[i] = marginal(σ[i], H(i, J, h, β), β)
         mags[i] = tanh(β * H(i, J, h, β))
     end
-    #bel ./ sum(bel)
     return mags
 end
 
