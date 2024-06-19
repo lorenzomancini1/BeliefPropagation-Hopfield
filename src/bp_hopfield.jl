@@ -79,21 +79,6 @@ function marginal(σ, H, β)
     return exp(σ * H * β)
 end
 
-#function node_belief(i, ν)
-#    # get the incoming messages to the variable node i
-#    inc_msg = ν[:, i]
-#    deleteat!(inc_msg, i)
-#    
-#    bel = 1
-#    for a in eachindex(inc_msg)
-#        bel *= inc_msg[a]
-#    end
-#    
-#    bel /= sum(bel)
-#    
-#    return bel   
-#end
-
 function run_bp(σ, J, β, p; maxiter = 200)
     
     N = length(σ)
